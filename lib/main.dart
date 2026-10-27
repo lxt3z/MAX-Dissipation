@@ -355,7 +355,7 @@ class KometApp extends StatefulWidget {
 
 class KometAppState extends State<KometApp>
     with WidgetsBindingObserver, TickerProviderStateMixin {
-  static const _fallbackSeed = Color(0xFFC1C4FF);
+  static const _fallbackSeed = Color(0xFF007AFF);
 
   final GlobalKey _captureBoundaryKey = GlobalKey();
   OverlayEntry? _revealEntry;
@@ -1104,7 +1104,7 @@ class KometAppState extends State<KometApp>
               lightBase = lightDynamic;
               darkBase = darkDynamic;
             } else {
-              final s = _schemesForSeed(const Color(0xFF007AFF));
+              final s = _schemesForSeed(_fallbackSeed);
               lightBase = s.light;
               darkBase = s.dark;
             }

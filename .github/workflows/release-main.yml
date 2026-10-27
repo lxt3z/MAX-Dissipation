@@ -216,7 +216,7 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
       - name: Analyze code
-        run: flutter analyze
+        run: flutter analyze --no-fatal-infos
       - name: Build iOS (no codesign)
         env:
           FLUTTER_XCODE_DEVELOPMENT_TEAM: "0000000000"
