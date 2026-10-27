@@ -2,41 +2,6 @@ name: Build iOS (App Store)
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-      - master
-    paths:
-      - 'lib/**'
-      - 'scripts/build_ios_share.sh'
-      - 'scripts/sign_ios_appstore.py'
-      - 'native/komet_share/**'
-      - 'native/komet_tlottie/**'
-      - 'native/crypto-core'
-      - 'native/crypto-core/**'
-      - 'ios/**'
-      - 'pubspec.yaml'
-      - 'pubspec.lock'
-      - '.gitmodules'
-      - '.github/workflows/build-ios-appstore.yml'
-      - '.github/actions/setup-rust/**'
-      - '.github/actions/pin-kolibri-crates/**'
-  pull_request:
-    paths:
-      - 'lib/**'
-      - 'scripts/build_ios_share.sh'
-      - 'scripts/sign_ios_appstore.py'
-      - 'native/komet_share/**'
-      - 'native/komet_tlottie/**'
-      - 'native/crypto-core'
-      - 'native/crypto-core/**'
-      - 'ios/**'
-      - 'pubspec.yaml'
-      - 'pubspec.lock'
-      - '.gitmodules'
-      - '.github/workflows/build-ios-appstore.yml'
-      - '.github/actions/setup-rust/**'
-      - '.github/actions/pin-kolibri-crates/**'
 
 env:
   FLUTTER_VERSION: '3.47.0'
