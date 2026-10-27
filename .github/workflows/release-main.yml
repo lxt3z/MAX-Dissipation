@@ -215,6 +215,8 @@ jobs:
           targets: aarch64-apple-ios,aarch64-apple-ios-sim,x86_64-apple-ios
       - name: Get dependencies
         run: flutter pub get
+      - name: Analyze code
+        run: flutter analyze
       - name: Build iOS (no codesign)
         env:
           FLUTTER_XCODE_DEVELOPMENT_TEAM: "0000000000"
