@@ -923,7 +923,7 @@ class KometAppState extends State<KometApp>
           backgroundColor: Colors.transparent,
           surfaceTintColor: Colors.transparent,
         ),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),
@@ -959,7 +959,7 @@ class KometAppState extends State<KometApp>
           backgroundColor: Colors.transparent,
           surfaceTintColor: Colors.transparent,
         ),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),

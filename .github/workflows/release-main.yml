@@ -216,9 +216,15 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
       - name: Build iOS (no codesign)
+        env:
+          FLUTTER_XCODE_DEVELOPMENT_TEAM: "0000000000"
+          FLUTTER_XCODE_CODE_SIGNING_ALLOWED: "NO"
+          FLUTTER_XCODE_CODE_SIGNING_REQUIRED: "NO"
+          FLUTTER_XCODE_CODE_SIGN_IDENTITY: ""
+          FLUTTER_XCODE_CODE_SIGN_ENTITLEMENTS: ""
         run: |
           flutter config --no-enable-swift-package-manager
-          flutter build ios --release --no-codesign
+          flutter build ios --release --no-codesign --verbose
       - name: Install ldid
         run: brew install ldid
       - name: Pseudo-sign with ldid
