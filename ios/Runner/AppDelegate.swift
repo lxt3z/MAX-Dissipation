@@ -43,6 +43,8 @@ final class KometStreamHandler: NSObject, FlutterStreamHandler {
       registerVideoNote(messenger)
       registerNotifications(messenger)
       registerScreen(messenger)
+      registerHaptics(messenger)
+      registerGlass(messenger)
     }
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
@@ -172,6 +174,18 @@ final class KometStreamHandler: NSObject, FlutterStreamHandler {
     }
     events("ru.komet.app/notification_events", messenger) { sink in
       KometNotifications.shared.attach(sink)
+    }
+  }
+
+  private func registerHaptics(_ messenger: FlutterBinaryMessenger) {
+    method("ru.komet.app/haptics", messenger) { call, result in
+      KometHaptics.shared.handle(call, result: result)
+    }
+  }
+
+  private func registerGlass(_ messenger: FlutterBinaryMessenger) {
+    method("ru.komet.app/glass", messenger) { call, result in
+      KometGlass.shared.handle(call, result: result)
     }
   }
 }

@@ -11,9 +11,14 @@ extension VisualStyleChrome on VisualStyle {
 class AppVisualStyle {
   static const prefKey = 'app_visual_style';
 
+  static VisualStyle get defaultStyle =>
+      defaultTargetPlatform == TargetPlatform.iOS
+          ? VisualStyle.liquidGlass
+          : VisualStyle.materialYou;
+
   static final _setting = PersistedEnum<VisualStyle>(
     prefKey: prefKey,
-    defaultValue: VisualStyle.materialYou,
+    defaultValue: defaultStyle,
     encode: _encode,
     decode: _parse,
   );
@@ -27,5 +32,5 @@ class AppVisualStyle {
   static String _encode(VisualStyle value) => value.name;
 
   static VisualStyle _parse(String? val) =>
-      enumFromName(VisualStyle.values, val, VisualStyle.materialYou);
+      enumFromName(VisualStyle.values, val, defaultStyle);
 }

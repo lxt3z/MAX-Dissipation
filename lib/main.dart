@@ -3,7 +3,9 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
+import 'package:flutter/cupertino.dart'
+    show CupertinoPageTransitionsBuilder, CupertinoScrollBehavior;
+import 'package:flutter/foundation.dart';
 import 'package:kolibri/kolibri.dart' show initKolibri;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -899,6 +901,85 @@ class KometAppState extends State<KometApp>
     _themeCacheLight = light;
     _themeCacheDark = dark;
     final displayFont = AppDisplayFont(AppFonts.displayFamily(_fontId));
+    final isIosGlass = defaultTargetPlatform == TargetPlatform.iOS ||
+        AppVisualStyle.current.value == VisualStyle.liquidGlass;
+
+    if (isIosGlass) {
+      _lightTheme = ThemeData(
+        useMaterial3: true,
+        platform: TargetPlatform.iOS,
+        colorScheme: light,
+        pageTransitionsTheme: _appPageTransitions,
+        progressIndicatorTheme: _expressiveProgressTheme,
+        splashFactory: NoSplash.splashFactory,
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        scaffoldBackgroundColor: const Color(0xFFF2F2F7),
+        appBarTheme: const AppBarTheme(
+          centerTitle: true,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          backgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+        ),
+        cardTheme: CardTheme(
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+          color: light.surfaceContainer,
+        ),
+        dividerTheme: DividerThemeData(
+          space: 0.5,
+          thickness: 0.5,
+          color: Colors.black.withValues(alpha: 0.08),
+        ),
+        extensions: [displayFont],
+        textTheme: AppFonts.textTheme(
+          _fontId,
+          ThemeData(brightness: Brightness.light).textTheme,
+        ),
+      );
+      _darkTheme = ThemeData(
+        useMaterial3: true,
+        platform: TargetPlatform.iOS,
+        colorScheme: dark,
+        pageTransitionsTheme: _appPageTransitions,
+        progressIndicatorTheme: _expressiveProgressTheme,
+        splashFactory: NoSplash.splashFactory,
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        scaffoldBackgroundColor: const Color(0xFF000000),
+        appBarTheme: const AppBarTheme(
+          centerTitle: true,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          backgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+        ),
+        cardTheme: CardTheme(
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+          color: dark.surfaceContainer,
+        ),
+        dividerTheme: DividerThemeData(
+          space: 0.5,
+          thickness: 0.5,
+          color: Colors.white.withValues(alpha: 0.08),
+        ),
+        extensions: [displayFont],
+        textTheme: AppFonts.textTheme(
+          _fontId,
+          ThemeData(brightness: Brightness.dark).textTheme,
+        ),
+      );
+      return;
+    }
+
     _lightTheme = withM3ETheme(
       ThemeData(
         useMaterial3: true,
@@ -938,6 +1019,18 @@ class KometAppState extends State<KometApp>
         surfaceContainerHighest: const Color(0xFF1C1C1C),
       );
     }
+    final isIosGlass = defaultTargetPlatform == TargetPlatform.iOS ||
+        AppVisualStyle.current.value == VisualStyle.liquidGlass;
+    if (isIosGlass) {
+      return base.copyWith(
+        surface: const Color(0xFF000000),
+        surfaceContainerLowest: const Color(0xFF0A0A0E),
+        surfaceContainerLow: const Color(0xFF121218),
+        surfaceContainer: const Color(0xFF1A1A22),
+        surfaceContainerHigh: const Color(0xFF22222D),
+        surfaceContainerHighest: const Color(0xFF2C2C38),
+      );
+    }
     return base.copyWith(
       surface: Color.alphaBlend(
         base.primary.withValues(alpha: 0.05),
@@ -955,6 +1048,18 @@ class KometAppState extends State<KometApp>
   }
 
   ColorScheme _adjustLightScheme(ColorScheme base) {
+    final isIosGlass = defaultTargetPlatform == TargetPlatform.iOS ||
+        AppVisualStyle.current.value == VisualStyle.liquidGlass;
+    if (isIosGlass) {
+      return base.copyWith(
+        surface: const Color(0xFFF2F2F7),
+        surfaceContainerLowest: const Color(0xFFFFFFFF),
+        surfaceContainerLow: const Color(0xFFF7F7FA),
+        surfaceContainer: const Color(0xFFECECEF),
+        surfaceContainerHigh: const Color(0xFFE5E5EA),
+        surfaceContainerHighest: const Color(0xFFDCDCE2),
+      );
+    }
     return base.copyWith(
       surface: Color.alphaBlend(
         base.primary.withValues(alpha: 0.06),
@@ -980,6 +1085,7 @@ class KometAppState extends State<KometApp>
             accentSeed,
             wallpaperSeed,
             AppWallpaperTint.current,
+            AppVisualStyle.current,
           ]),
           builder: (context, _) {
             final seed =
@@ -992,13 +1098,15 @@ class KometAppState extends State<KometApp>
               final s = _schemesForSeed(seed);
               lightBase = s.light;
               darkBase = s.dark;
-            } else if (lightDynamic != null && darkDynamic != null) {
+            } else if (defaultTargetPlatform != TargetPlatform.iOS &&
+                lightDynamic != null &&
+                darkDynamic != null) {
               lightBase = lightDynamic;
               darkBase = darkDynamic;
             } else {
-              final s = _schemesForSeed(_fallbackSeed);
-              lightBase = lightDynamic ?? s.light;
-              darkBase = darkDynamic ?? s.dark;
+              final s = _schemesForSeed(const Color(0xFF007AFF));
+              lightBase = s.light;
+              darkBase = s.dark;
             }
 
             final lightScheme = _adjustLightScheme(lightBase);
@@ -1012,6 +1120,12 @@ class KometAppState extends State<KometApp>
               locale: _locale,
               themeMode: _effectiveThemeMode,
               themeAnimationDuration: Duration.zero,
+              scrollBehavior: const CupertinoScrollBehavior().copyWith(
+                scrollbars: false,
+                physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics(),
+                ),
+              ),
               localizationsDelegates: AppLocalizations.localizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
               theme: _lightTheme,

@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:m3e_collection/m3e_collection.dart';
 
 import '../../backend/api.dart';
+import '../../core/config/app_visual_style.dart';
 import '../../main.dart' show api;
 import 'small_spinner.dart';
 
@@ -137,12 +139,37 @@ class ConnectionTitleBar extends StatelessWidget implements PreferredSizeWidget 
   Size get preferredSize => const Size.fromHeight(64);
 
   @override
-  Widget build(BuildContext context) => ConnectionStatusBuilder(
-    builder: (context, label) => AppBarM3E(
-      titleText: label ?? titleText,
-      backgroundColor: backgroundColor,
-    ),
-  );
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final isIosGlass = defaultTargetPlatform == TargetPlatform.iOS ||
+        AppVisualStyle.current.value == VisualStyle.liquidGlass;
+    return ConnectionStatusBuilder(
+      builder: (context, label) {
+        final title = label ?? titleText;
+        if (isIosGlass) {
+          return AppBar(
+            title: Text(
+              title,
+              style: TextStyle(
+                color: cs.onSurface,
+                fontSize: 17,
+                fontWeight: FontWeight.w600,
+                letterSpacing: -0.4,
+              ),
+            ),
+            centerTitle: true,
+            backgroundColor: backgroundColor ?? Colors.transparent,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+          );
+        }
+        return AppBarM3E(
+          titleText: title,
+          backgroundColor: backgroundColor,
+        );
+      },
+    );
+  }
 }
 
 class ConnectionSpinner extends StatelessWidget {

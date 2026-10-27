@@ -3,18 +3,17 @@ name: Build iOS
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
-      - master
     paths:
       - 'lib/**'
       - 'ios/**'
+      - 'shaders/**'
       - 'pubspec.yaml'
       - '.github/workflows/build-ios.yml'
   pull_request:
     paths:
       - 'lib/**'
       - 'ios/**'
+      - 'shaders/**'
       - 'pubspec.yaml'
       - '.github/workflows/build-ios.yml'
 
@@ -44,6 +43,9 @@ jobs:
 
       - name: Get dependencies
         run: flutter pub get
+
+      - name: Analyze code
+        run: flutter analyze
 
       - name: Build iOS (no codesign)
         run: |

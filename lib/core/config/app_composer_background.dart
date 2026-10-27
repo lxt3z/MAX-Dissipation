@@ -17,9 +17,14 @@ class ComposerMaterial {
 class AppComposerBackground {
   static const prefKey = 'app_composer_background';
 
+  static ComposerBackground get defaultBackground =>
+      defaultTargetPlatform == TargetPlatform.iOS
+          ? ComposerBackground.liquidGlass
+          : ComposerBackground.standard;
+
   static final _setting = PersistedEnum<ComposerBackground>(
     prefKey: prefKey,
-    defaultValue: ComposerBackground.standard,
+    defaultValue: defaultBackground,
     encode: (value) => value.name,
     decode: _parse,
   );
@@ -33,6 +38,6 @@ class AppComposerBackground {
   static ComposerBackground _parse(String? val) => enumFromName(
     ComposerBackground.values,
     val,
-    ComposerBackground.standard,
+    defaultBackground,
   );
 }

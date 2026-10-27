@@ -188,28 +188,28 @@ class _VisualStyleCard extends StatelessWidget {
           ValueListenableBuilder<VisualStyle>(
             valueListenable: AppVisualStyle.current,
             builder: (context, current, _) {
-              final selectable =
-                  current == VisualStyle.liquidGlass && !LiquidGlass.isSupported
-                  ? VisualStyle.glossy
-                  : current;
-              return SegmentedButton<VisualStyle>(
-                showSelectedIcon: false,
-                segments: [
+              final segments = <ButtonSegment<VisualStyle>>[
+                ButtonSegment(
+                  value: VisualStyle.liquidGlass,
+                  label: Text(l10n.appearanceVisualStyleLiquidGlass),
+                ),
+                ButtonSegment(
+                  value: VisualStyle.glossy,
+                  label: Text(l10n.appearanceVisualStyleGlossy),
+                ),
+                if (defaultTargetPlatform != TargetPlatform.iOS)
                   ButtonSegment(
                     value: VisualStyle.materialYou,
                     label: Text(l10n.appearanceVisualStyleMaterialYou),
                   ),
-                  ButtonSegment(
-                    value: VisualStyle.glossy,
-                    label: Text(l10n.appearanceVisualStyleGlossy),
-                  ),
-                  if (LiquidGlass.isSupported)
-                    ButtonSegment(
-                      value: VisualStyle.liquidGlass,
-                      label: Text(l10n.appearanceVisualStyleLiquidGlass),
-                    ),
-                ],
-                selected: {selectable},
+              ];
+              final validSelected = segments.any((s) => s.value == current)
+                  ? current
+                  : VisualStyle.liquidGlass;
+              return SegmentedButton<VisualStyle>(
+                showSelectedIcon: false,
+                segments: segments,
+                selected: {validSelected},
                 onSelectionChanged: (set) {
                   if (set.isNotEmpty) {
                     Haptics.selection();

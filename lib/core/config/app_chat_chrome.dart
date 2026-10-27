@@ -13,9 +13,14 @@ class ChatChromeMaterial {
 class AppChatChrome {
   static const prefKey = 'app_chat_chrome';
 
+  static ChatChromeStyle get defaultStyle =>
+      defaultTargetPlatform == TargetPlatform.iOS
+          ? ChatChromeStyle.liquidGlass
+          : ChatChromeStyle.none;
+
   static final _setting = PersistedEnum<ChatChromeStyle>(
     prefKey: prefKey,
-    defaultValue: ChatChromeStyle.none,
+    defaultValue: defaultStyle,
     encode: _encode,
     decode: _parse,
   );
@@ -23,7 +28,7 @@ class AppChatChrome {
   static ValueNotifier<ChatChromeStyle> get current => _setting.current;
 
   static ChatChromeStyle _parse(String? value) =>
-      enumFromName(ChatChromeStyle.values, value, ChatChromeStyle.none);
+      enumFromName(ChatChromeStyle.values, value, defaultStyle);
 
   static String _encode(ChatChromeStyle value) => value.name;
 

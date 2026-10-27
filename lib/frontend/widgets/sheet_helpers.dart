@@ -1,11 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/config/app_shape.dart';
+import '../../core/utils/haptics.dart';
+import 'springy_tap.dart';
 
-/// Standard rounded top shape for modal bottom sheets.
 const RoundedRectangleBorder kSheetShape = AppShape.sheetBorder;
 
-/// Pill-shaped action button for the bottom row of a modal sheet.
 class SheetButton extends StatelessWidget {
   final String label;
   final bool filled;
@@ -26,25 +27,35 @@ class SheetButton extends StatelessWidget {
     final disabled = onTap == null;
     final fill = color ?? cs.primary;
     final labelColor = filled ? cs.onPrimary : (color ?? cs.onSurface);
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 44,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: filled
-              ? (disabled ? fill.withValues(alpha: 0.4) : fill)
-              : cs.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(22),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: disabled
-                ? labelColor.withValues(alpha: filled ? 0.85 : 0.4)
-                : labelColor,
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
+    return SpringyTap(
+      enabled: !disabled,
+      pressedScale: 0.97,
+      child: GestureDetector(
+        onTap: () {
+          if (onTap != null) {
+            Haptics.tap();
+            onTap!();
+          }
+        },
+        child: Container(
+          height: 48,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: filled
+                ? (disabled ? fill.withValues(alpha: 0.4) : fill)
+                : cs.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: disabled
+                  ? labelColor.withValues(alpha: filled ? 0.85 : 0.4)
+                  : labelColor,
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              letterSpacing: -0.2,
+            ),
           ),
         ),
       ),
@@ -52,7 +63,6 @@ class SheetButton extends StatelessWidget {
   }
 }
 
-/// The little drag "grabber" pill shown at the top of a bottom sheet.
 class SheetGrabber extends StatelessWidget {
   final EdgeInsetsGeometry margin;
 
@@ -65,12 +75,12 @@ class SheetGrabber extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return Container(
-      width: 40,
-      height: 4,
+      width: 36,
+      height: 5,
       margin: margin,
       decoration: BoxDecoration(
-        color: cs.onSurfaceVariant.withValues(alpha: 0.35),
-        borderRadius: BorderRadius.circular(2),
+        color: cs.onSurfaceVariant.withValues(alpha: 0.3),
+        borderRadius: BorderRadius.circular(2.5),
       ),
     );
   }

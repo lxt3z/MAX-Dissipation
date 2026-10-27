@@ -1,4 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+import '../../core/config/app_visual_style.dart';
+import '../../core/utils/haptics.dart';
+import 'liquid_glass.dart';
 
 const Duration _defaultNotificationDuration = Duration(milliseconds: 2600);
 
@@ -19,6 +24,7 @@ void showCustomNotificationOnOverlay(
   String message, {
   Duration? duration,
 }) {
+  Haptics.selection();
   final total = duration ?? _defaultNotificationDuration;
   final entry = OverlayEntry(
     builder: (context) => CustomNotification(message: message, duration: total),
@@ -32,6 +38,7 @@ void showCustomNotificationOnOverlay(
 class CustomNotification extends StatefulWidget {
   final String message;
   final Duration duration;
+
   const CustomNotification({
     required this.message,
     this.duration = _defaultNotificationDuration,
@@ -44,20 +51,26 @@ class CustomNotification extends StatefulWidget {
 
 class _CustomNotificationState extends State<CustomNotification>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _opacity;
+  late final AnimationController _controller;
+  late final Animation<double> _scale;
+  late final Animation<double> _opacity;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
-      reverseDuration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 320),
+      reverseDuration: const Duration(milliseconds: 240),
     );
-    _opacity = Tween<double>(begin: 0.0, end: 1.0).animate(_controller);
+    _scale = Tween<double>(begin: 0.88, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+    );
+    _opacity = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
     _controller.forward();
-    final fadeOutDelay = widget.duration - const Duration(milliseconds: 300);
+    final fadeOutDelay = widget.duration - const Duration(milliseconds: 260);
     Future.delayed(
       fadeOutDelay > Duration.zero ? fadeOutDelay : Duration.zero,
       () {
@@ -75,29 +88,68 @@ class _CustomNotificationState extends State<CustomNotification>
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final isIosGlass = defaultTargetPlatform == TargetPlatform.iOS ||
+        AppVisualStyle.current.value == VisualStyle.liquidGlass;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final childWidget = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 13),
+      child: Text(
+        widget.message,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: cs.onSurface,
+          fontSize: 14.5,
+          fontWeight: FontWeight.w500,
+          letterSpacing: isIosGlass ? -0.2 : 0,
+        ),
+      ),
+    );
+
     return Positioned(
-      bottom: 60,
-      left: 0,
-      right: 0,
+      bottom: 64,
+      left: 16,
+      right: 16,
       child: Material(
         color: Colors.transparent,
         child: Center(
           child: FadeTransition(
             opacity: _opacity,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              decoration: BoxDecoration(
-                color: cs.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(50),
-              ),
-              child: Text(
-                widget.message,
-                style: TextStyle(
-                  color: cs.onSurface,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+            child: ScaleTransition(
+              scale: _scale,
+              child: isIosGlass
+                  ? GlassSurface(
+                      liquid: LiquidGlass.isSupported,
+                      borderRadius: BorderRadius.circular(28),
+                      frostTint: isDark
+                          ? const Color(0x991E1E28)
+                          : const Color(0xCCFFFFFF),
+                      liquidTint: isDark
+                          ? const Color(0x4D1E1E28)
+                          : const Color(0x80FFFFFF),
+                      frostSigma: 24,
+                      border: Border.all(
+                        color: isDark
+                            ? Colors.white.withValues(alpha: 0.14)
+                            : Colors.black.withValues(alpha: 0.08),
+                        width: 0.8,
+                      ),
+                      child: childWidget,
+                    )
+                  : Container(
+                      decoration: BoxDecoration(
+                        color: cs.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(50),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.2),
+                            blurRadius: 16,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: childWidget,
+                    ),
             ),
           ),
         ),

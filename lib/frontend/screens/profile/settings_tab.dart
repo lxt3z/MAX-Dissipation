@@ -407,6 +407,7 @@ class _SettingsTabState extends State<SettingsTab> with SpectrumSurface {
                             _SettingsItem(
                               icon: Symbols.badge,
                               label: 'Цифровой ID',
+                              iconBackground: const Color(0xFF007AFF),
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -423,6 +424,7 @@ class _SettingsTabState extends State<SettingsTab> with SpectrumSurface {
                             _SettingsItem(
                               icon: Symbols.language,
                               label: 'Войти в Сферум',
+                              iconBackground: const Color(0xFF00C7BE),
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -440,6 +442,7 @@ class _SettingsTabState extends State<SettingsTab> with SpectrumSurface {
                               _SettingsItem(
                                 icon: Symbols.info,
                                 label: 'Info',
+                                iconBackground: const Color(0xFF8E8E93),
                                 onTap: () {
                                   Navigator.push(
                                     context,
@@ -470,6 +473,7 @@ class _SettingsTabState extends State<SettingsTab> with SpectrumSurface {
                         _SettingsItem(
                           icon: Symbols.notifications_active,
                           label: 'Уведомления',
+                          iconBackground: const Color(0xFFFF3B30),
                           onTap: () {
                             Navigator.push(
                               context,
@@ -483,11 +487,13 @@ class _SettingsTabState extends State<SettingsTab> with SpectrumSurface {
                         _SettingsItem(
                           icon: Symbols.cloud,
                           label: 'Облачное хранилище [BETA]',
+                          iconBackground: const Color(0xFF34C759),
                           onTap: () => _openCloudStorage(context),
                         ),
                         _SettingsItem(
                           icon: Symbols.vpn_lock,
                           label: 'Прокси',
+                          iconBackground: const Color(0xFF5856D6),
                           onTap: () {
                             final cs = Theme.of(context).colorScheme;
                             showModalBottomSheet<void>(
@@ -506,6 +512,7 @@ class _SettingsTabState extends State<SettingsTab> with SpectrumSurface {
                         _SettingsItem(
                           icon: Symbols.shield_lock,
                           label: AppLocalizations.of(context)!.profileMenuSpoof,
+                          iconBackground: const Color(0xFFFF9500),
                           onTap: () {
                             Navigator.push(
                               context,
@@ -518,6 +525,7 @@ class _SettingsTabState extends State<SettingsTab> with SpectrumSurface {
                         _SettingsItem(
                           icon: Symbols.lock,
                           label: 'Безопасность',
+                          iconBackground: const Color(0xFFFF2D55),
                           onTap: () {
                             Navigator.push(
                               context,
@@ -533,6 +541,7 @@ class _SettingsTabState extends State<SettingsTab> with SpectrumSurface {
                         _SettingsItem(
                           icon: Symbols.devices,
                           label: 'Устройства',
+                          iconBackground: const Color(0xFF007AFF),
                           onTap: () {
                             Navigator.push(
                               context,
@@ -581,6 +590,7 @@ class _SettingsTabState extends State<SettingsTab> with SpectrumSurface {
                                   _SettingsItem(
                                     icon: Symbols.construction,
                                     label: 'Для разработчиков',
+                                    iconBackground: const Color(0xFF8E8E93),
                                     onTap: () {
                                       Navigator.push(
                                         context,
@@ -611,6 +621,7 @@ class _SettingsTabState extends State<SettingsTab> with SpectrumSurface {
                           label: _isCheckingForUpdates
                               ? l10n.updateChecking
                               : l10n.updateCheck,
+                          iconBackground: const Color(0xFF34C759),
                           onTap: _isCheckingForUpdates
                               ? null
                               : _checkForUpdates,
@@ -636,6 +647,7 @@ class _SettingsTabState extends State<SettingsTab> with SpectrumSurface {
                         _SettingsItem(
                           icon: Symbols.logout,
                           label: 'Выйти из аккаунта',
+                          iconBackground: const Color(0xFFFF3B30),
                           tintColor: cs.error,
                           onTap: _confirmLogout,
                         ),
@@ -1067,6 +1079,7 @@ class _SettingsTabState extends State<SettingsTab> with SpectrumSurface {
           leading: item.leading,
           label: item.label,
           tintColor: item.tintColor,
+          iconBackground: item.iconBackground,
           onTap: item.onTap,
           isLast: index == items.length - 1,
         );
@@ -1081,6 +1094,7 @@ class _SettingsItem {
   final String label;
   final VoidCallback? onTap;
   final Color? tintColor;
+  final Color? iconBackground;
 
   const _SettingsItem({
     this.icon,
@@ -1088,6 +1102,7 @@ class _SettingsItem {
     required this.label,
     this.onTap,
     this.tintColor,
+    this.iconBackground,
   });
 }
 
